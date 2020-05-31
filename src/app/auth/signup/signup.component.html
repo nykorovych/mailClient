@@ -1,27 +1,38 @@
 <h3>Creat a account</h3>
-<form class="ui form" [formGroup] = "authForm">
-    <!-- <div class="field">
-        <label>UserName</label>
-        <input formControlName = "username">
-    </div> -->
+<form class="ui form" [formGroup]="authForm">
+  <app-input
+    inputType="text"
+    label="Username"
+    [control]="authForm.get('username')"
+  ></app-input>
+  <app-input
+    inputType="password"
+    label="password"
+    [control]="authForm.get('password')"
+  ></app-input>
+  <app-input
+    inputType="password"
+    label="passwordConfirmation"
+    [control]="authForm.get('passwordConfirmation')"
+  ></app-input>
 
-    <app-input label="Username" [control]="authForm.get('username')"></app-input>
-    {{ authForm.get('username').errors | json }}
-
-    <div class="field">
-        <label>Password</label>
-        <input formControlName = "password">
-    </div>
-
-    {{ authForm.get('password').errors | json }}
-
-    <div class="field">
-        <label>PasswordConfirmation</label>
-        <input formControlName = "passwordConfirmation">
-    </div>
-
-    {{ authForm.get('passwordConfirmation').errors | json }}
-
-    <button class="ui submit button primary">Save</button>
-    {{ authForm.errors | json}}
+  <div
+    *ngIf="
+      authForm.get('password').touched &&
+      authForm.get('passwordConfirmation').touched &&
+      authForm.errors
+    "
+    class="ui red basic label"
+  >
+    <p *ngIf="authForm.errors.passwordsDontMatch">
+      dont match
+    </p>
+  </div>
+  <div>
+    <button class="ui submit button primary">
+        Save
+    </button>
+  </div>
+  
+  {{ authForm.errors | json }}
 </form>
