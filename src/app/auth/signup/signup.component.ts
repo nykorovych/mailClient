@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatchPassword } from '../validators/match-password';
 import { UniquUsername } from '../validators/uniqu-username';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -37,8 +38,27 @@ export class SignupComponent implements OnInit {
 
   constructor(
     public match: MatchPassword,
-    private uniquUsername: UniquUsername
+    private uniquUsername: UniquUsername,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {}
+
+  onSubmit() {
+    if (this.authForm.invalid) {
+      return;
+    }
+    this.authService.signup(this.authForm.value).subscribe({
+      next: res => {
+
+      },
+      error: err => {
+        if (!err.status) {
+          this.authForm.setErrors({noConnection: true})
+        } else {
+          this.authForm.setErrors({unknownError: true})
+        }
+      }
+    })
+  }
 }

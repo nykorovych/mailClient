@@ -1,5 +1,5 @@
 <h3>Creat a account</h3>
-<form class="ui form" [formGroup]="authForm">
+<form (ngSubmit) = "onSubmit()" class="ui form" [formGroup]="authForm">
   <app-input
     inputType="text"
     label="Username"
@@ -25,14 +25,21 @@
     class="ui red basic label"
   >
     <p *ngIf="authForm.errors.passwordsDontMatch">
-      dont match
+      Dont match
     </p>
+    <p *ngIf="authForm.errors.noConnection">
+      No internet PEPEG!
+    </p>
+    <p *ngIf="authForm.errors.unknownError">
+      Oh  NO NO NO!! 
+    </p>
+
   </div>
+  
   <div>
-    <button class="ui submit button primary">
+    <button class="ui submit button primary" type="submit">
         Save
     </button>
   </div>
   
-  {{ authForm.errors | json }}
 </form>
