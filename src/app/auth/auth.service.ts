@@ -11,6 +11,16 @@ interface SignupCredantials {
 interface SignupResponse {
   username: string
 }
+interface SigninResponse {
+  authenticated: boolean,
+  username: string
+
+}
+interface SigninCredentials{
+  username: string,
+  password: string
+
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -36,5 +46,30 @@ export class AuthService {
         this.signedin$.next(true)
       })
     );
+  }
+  chechAuth(){
+    return this.http.get<SigninResponse>(`${this.rootUrl}auth/signedin`)
+    .pipe(
+      tap(({authenticated}) => {
+        this.signedin$.next(authenticated)
+      }) 
+    )
+  }
+  signeout() {
+    // PORT REQUEST HAS TO HAVE A BODY EVEN IF IT'S EMPTY
+     return this.http.post<any>(`${this.rootUrl}auth/signout`, {})
+    .pipe(
+      tap(()=>{
+        this.signedin$.next(false)
+      })
+    )
+  }
+  signin(credentials: SigninCredentials) {
+    return this.http.post(`${this.rootUrl}auth/signin`, credentials)
+    .pipe(
+      tap(()=>{
+        this.signedin$.next(true)
+      })
+    )
   }
 }

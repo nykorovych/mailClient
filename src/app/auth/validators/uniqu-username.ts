@@ -14,7 +14,7 @@ export class UniquUsername implements AsyncValidator {
         if (value.available) return null;
       }),
       catchError((err) => {
-        console.log(err);
+        console.log(`erRRRR from uniqe-user Validator: ${err}`);
         return of({ nouniqueUser: true });
       })
     );
