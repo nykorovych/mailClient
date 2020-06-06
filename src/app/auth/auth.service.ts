@@ -19,13 +19,16 @@ interface SigninResponse {
 interface SigninCredentials{
   username: string,
   password: string
-
+}
+interface SigninResponse {
+  username: string
 }
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   signedin$ = new BehaviorSubject(null)
+  username: string
 
   rootUrl = 'https://api.angular-email.com/';
 
@@ -42,21 +45,24 @@ export class AuthService {
   signup(credantials: SignupCredantials) {
     return this.http.post<SignupResponse>(`${this.rootUrl}auth/signup`, credantials).pipe(
      
-      tap(() => {
+      tap((res) => {
         this.signedin$.next(true)
+        this.username = res.username
       })
     );
   }
   chechAuth(){
     return this.http.get<SigninResponse>(`${this.rootUrl}auth/signedin`)
     .pipe(
-      tap(({authenticated}) => {
+      tap(({authenticated, username}) => {
         this.signedin$.next(authenticated)
+        this.username = username
+
       }) 
     )
   }
   signeout() {
-    // PORT REQUEST HAS TO HAVE A BODY EVEN IF IT'S EMPTY
+    // POST REQUEST HAS TO HAVE A BODY EVEN IF IT'S EMPTY
      return this.http.post<any>(`${this.rootUrl}auth/signout`, {})
     .pipe(
       tap(()=>{
@@ -65,10 +71,11 @@ export class AuthService {
     )
   }
   signin(credentials: SigninCredentials) {
-    return this.http.post(`${this.rootUrl}auth/signin`, credentials)
+    return this.http.post<SigninResponse>(`${this.rootUrl}auth/signin`, credentials)
     .pipe(
-      tap(()=>{
+      tap((res)=>{
         this.signedin$.next(true)
+        this.username = res.username
       })
     )
   }
